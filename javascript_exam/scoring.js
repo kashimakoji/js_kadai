@@ -11,26 +11,22 @@ $(document).ready(function () {
     Number($('#society').val())
     ];
     // 変数「sum」に「国語、英語、数学、理科、社会」の点数を足します。
-    /*let sum = subject_points[0];
+    let sum = subject_points[0];
     sum = sum + subject_points[1];
     sum = sum + subject_points[2];
     sum = sum + subject_points[3];
-    sum = sum + subject_points[4];*/
-    let sum = 0;
-    for(let i=0; i<Number; i++){
-      sum += subject_points[i];
-    }
+    sum = sum + subject_points[4];
+    
     // 「合計点：」(id="sum_indicate")に変数「sum」(合計点)を出力させます。
     $("#sum_indicate").text(sum);
     sum_indicate = sum; //追記
 
     // 「平均点：」に各教科の平均点を出力する処理を記述する。
     let average = sum / subject_points.length;    //追記
-    
     $("#average_indicate").text(average);
      // ヒント：変数「average」に平均値を出して代入しましょう(平均をとりたい数の合計点数(sum) / 全体の個数)
     // ヒント：全体の個数はlengthメソッドを使って求めます。(lengthメソッド: 文字列の長さや配列の要素数などを取得するメソッド)
-  };
+  };////////////////////////////////////////////////////////////////
 
   // 平均点数を取得し、取得した平均点数から「A、B、C、D」にランク分けするロジックを記述する。
   function get_achievement() {
@@ -38,14 +34,19 @@ $(document).ready(function () {
     // 平均点数をHTML上のid="average_indicate"から取得して代入します。
     let averageIndicate = $("#average_indicate").text();
     console.log(averageIndicate)
-    // もし「averageIndicate」が80以上なら"A"を返します。
-    if (averageIndicate >= 80) {
+    
+    if (averageIndicate >= 80) {            // もし「averageIndicate」が80以上なら"A"を返します。
       return "A";
-    }
-    // もし「averageIndicate」が60以上なら"B"を返します。
-    // もし「averageIndicate」が40以上なら"C"を返します。
-    // もし「averageIndicate」がそれ以外なら"D"を返します。
+      } else if (averageIndicate >=60) {    // もし「averageIndicate」が60以上なら"B"を返します。
+        return "B";
+      } else if (averageIndicate >=40) {    // もし「averageIndicate」が40以上なら"C"を返します。
+        return "C";
+      } else {                              // もし「averageIndicate」がそれ以外なら"D"を返します。
+        return "D";
+      }   
   };
+  ///////////////////////////////////////////////////////////////////
+
   // 各教科の点数を取得し、取得した点数から「合格、不合格」の判断を下すロジックを作ります。
   function get_pass_or_failure() {
     let subject_points = [Number($('#national_language').val()),
@@ -60,8 +61,16 @@ $(document).ready(function () {
     let judge = "合格";
     // 入力したそれぞれの教科のうち、1つでも60点よりも低い点数があった場合、変数「judge」に"不合格"を再代入する処理を記述する。
     // ヒント：配列の繰り返し処理について調べてみましょう。
+    for (let i=0; i<number; i++){
+      if (subject_points[i] < 60){
+        judge = "不合格";
+        break;
+      }
+    }
     return judge;
   };
+  //////////////////////////////////////////////////////////////////////
+
   // 最終的なジャッジのロジックを作ります。
   function judgement() {
     // 変数「achievement」に「get_achievement()の戻り値」を代入します。
@@ -87,5 +96,10 @@ $(document).ready(function () {
   // ２回目以降に「最終ジャッジ」ボタンを押した際は、それまでに表示していたジャッジのHTML要素を削除して、新たなジャッジのHTML要素を追加する。
   // ヒント：removeメソッドについて調べてみましょう。
   $('#btn-declaration').click(function () {
-  });
+    //$('#declaration').text(judgement());
+    $('#declaration').empty();
+    $('#declaration').text(judgement());
+    });
+  
+
 });
