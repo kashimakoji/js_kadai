@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <h1>テスト！！！！！！！！！！！！！</h1>
+    <% require 'pg' %>
+    <% connection = PG::connect(dbname: "goya") %>
+    <% connection.internal_encoding = "UTF-8" %>
+    <!-- formに囲まれている内容を、indicate.rb(cgi)に送信しますという記述 -->
+    <form action='indicate.cgi' method='POST'>
+      下記に文字を入力してください<br><br>
+      <!-- このinputに入力された情報が、submitの送信ボタンでデータとして送られる -->
+      <!-- name='input'は送られた先の目印となる情報 -->
+      <!-- type="text"は入力ができるフォームを作成するという記述 -->
+      <input type="text"  name='input' ><br>
+      <input type="submit" name="送信" >
+    </form>
+
+    <% result = connection.exec("select wight, give_for from crops;") %>
+    <% data = [] %>
+    <% result.each do |record| %>
+      <% data << "ゴーヤの大きさ：#{record["wight"]} 売った相手：#{record["give_for"]}" %>
+    <% end %>
+    <form action="goya.cgi" method="POST">
+      下記のボタンを押すと、ゴーヤの大きさと売った相手の情報ページに飛びます<br><br>
+      <!-- valueには、送りたいデータを代入する -->
+       <!-- name="goya"を、情報の目印とする -->
+      <input type="text" name="goya" value="<%= data.join(' ') %>">
+      <input type="submit" name="送信">
+    </form>
+
+    <% result = connection.exec("select give_for from crops
+                                  WHERE give_for != '自家消費';") %>
+    <% data = [] %>
+    <% result.each do |record| %>
+      <% data << "自家消費以外→#{record["give_for"]}" %>
+    <% end %>
+    <form action="goya2.cgi" method="POST">
+      下記のボタンを押すと、譲渡先が自家消費以外を表示します<br><br>
+      <!-- valueには、送りたいデータを代入する -->
+       <!-- name="goya2"を、情報の目印とする -->
+      <input type="text" name="goya2" value="<%= data.join(' ') %>">
+      <input type="submit" name="送信1">
+    </form>
+
+
+    <% result = connection.exec("select quality from crops    
+                                WHERE quality = false;") %>
+    <% data = [] %>
+    <% result.each do |record| %>
+      <% data << "品質が悪い→#{record["quality"]}" %>
+    <% end %>
+    <form action="goya3.cgi" method="POST">
+      下記のボタンを押すと、品質が悪いものを表示します<br><br>
+       <!-- name="goya3"を、情報の目印とする -->
+      <input type="text" name="goya3" value="<%= data.join(' ') %>">
+      <input type="submit" name="送信2">
+    </form>
+  </body>
+</html>
